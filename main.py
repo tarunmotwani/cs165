@@ -1,13 +1,11 @@
 import hashlib
 import re
 from itertools import chain, product
-
-
-# team7:$1$hfT7jp2q$u3zPkglU5aB4J3suCZ3yA/:16653:0:99999:7:::
+import multiprocessing as mp
 
 
 def generateOutputs(charset, maxlength):
-    return (''.join(candidate)
+    print (''.join(candidate)
         for candidate in chain.from_iterable(product(charset, repeat=i)
         for i in range(1, maxlength + 1)))
 
@@ -27,7 +25,7 @@ def generateOutputs(charset, maxlength):
     # return
     
 
-def findBytes(password):
+def findEnd(password):
     temp = ""
     binaryPassword = bin(len(password))
     reverse = binaryPassword[:1:-1]
@@ -44,33 +42,40 @@ def main():
     salt = "hfT7jp2q"
     password = "test"
     goalState = "u3zPkglU5aB4J3suCZ3yA/"
-    
+    p = mp.Pool(30)
+
     # outputList = list(generateOutputs('abcdefghijklmnopqrstuvwxyz', 6))
    
     # ------------------------------------------------------------------------
     temp = password + salt + password
     alternate_sum = hashlib.md5(temp.encode('utf-8')).digest()
     sliceAlternate = str(alternate_sum[0:len(password)])
-    intermediate_0 = password  + magic + salt + sliceAlternate + findBytes(password) 
+    intermediate_0 = password  + magic + salt + sliceAlternate + findEnd(password) 
     print(intermediate_0)
-    solution = str(hashlib.md5(intermediate_0.encode('utf-8')).digest())
-    intermediate_temp = solution
+    intermediate_temp = hashlib.md5(intermediate_0).digest()
+    test=hashlib.md5("dqdgiasnjgdiqdwj".encode("utf-8")).digest()
+    print("test:")
+    print(len(test))
+    print(len(intermediate_temp))
+    print(type(intermediate_temp))
+    # intermediate_temp = solution
     for i in range(1000):
+        solution = ""
         if i%2 == 0: solution += intermediate_temp
         if i%2 == 1: solution += password
         if i%3 != 0: solution += salt
         if i%7 != 0: solution += password
         if i%2 == 0: solution += password
         if i%2 == 1: solution += intermediate_temp
+        solution = hashlib.md5(solution).digest()
         intermediate_temp = solution
-        solution = str(hashlib.md5(solution.encode('utf-8')).digest())
-        print(i)
+        # print(i)
 
-    print(len(solution))
+    # print(solution)
     # ------------------------------------------------------------------------
-
-
-
+    p.close()
+    p.join()
+    #syntax
     # str(len(hashlib.md5(temp.encode('utf-8')).digest())) + "3"
 
 
