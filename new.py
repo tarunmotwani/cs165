@@ -69,7 +69,7 @@ def main():
         # ------------------------------------------------------------------------
         temp = password + salt + password
         alternate_sum = hashlib.md5(temp.encode()).digest()
-        print(alternate_sum)
+        # print(alternate_sum)
         sliceAlternate = alternate_sum[0:len(password)]
         intermediate_0 = hashlib.md5((password  + magic + salt).encode())
         intermediate_0.update(sliceAlternate)
@@ -96,7 +96,7 @@ def main():
             # solution = hashlib.md5(solution.encode()).digest()
             intermediate_temp = solution.digest()
             # print(i)
-        print(intermediate_temp)
+        # print(intermediate_temp)
         # print(len(intermediate_temp))
         goalArray = []
         arr = [11, 4, 10, 5, 3, 9, 15, 2, 8, 14, 1, 7, 13, 0, 6, 12]
@@ -118,19 +118,17 @@ def main():
         # output += crypt[int(goalString[0:remainder],2)]
         # print(output)
 
-        out_hash = ""
-        remainder = len(goalString) % 6
-        split = int(len(goalString) / 6)
+        goal = ""
 
         #print("bitlength: " + str(len(bits)))
         #print("lo: " + str(leftover) + "   g: " + str(split))
 
-        for i in range(split): out_hash += crypt[int(goalString[int(128 - ((i + 1)*6)):int(128 - (i*6))],2)]
-        out_hash += crypt[int(goalString[0:remainder],2)]
-        print("OUTPUT: ", out_hash)
-        if(out_hash == goalState):
-            print("We got em boys!", out_hash)
-            break
+        for i in range(int(len(goalString) / 6)): goal += crypt[int(goalString[int(128 - ((i + 1)*6)):int(128 - (i*6))],2)]
+        goal += crypt[int(goalString[0:len(goalString) % 6],2)]
+        print("OUTPUT: ", goal)
+        if(goal == goalState):
+            print("We got em boys!", goal)
+            exit(1)
         # break
         # split = int(len(goalString)/6)
         # for i in range(split):
